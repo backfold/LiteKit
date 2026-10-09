@@ -39,6 +39,19 @@ def segment_to_path(segment: str) -> str:
                 f"expected one of: {', '.join(sorted(PARAM_TYPES))}"
             )
         return f"{{{match['name']}:{type_}}}"
+    if segment.startswith("[[") and segment.endswith("]]"):
+        raise RouteConfigError(
+            f"Optional parameters like {segment!r} are not supported; "
+            "add a +server.py both in the parent directory and in a [param] directory"
+        )
+    if "{" in segment or "}" in segment:
+        raise RouteConfigError(
+            f"Route directory {segment!r} uses Litestar path syntax; "
+            "name it [name] or [name=type] instead (for example [id=int])"
+        )
     if "[" in segment or "]" in segment:
-        raise RouteConfigError(f"Malformed route segment {segment!r}")
+        raise RouteConfigError(
+            f"Malformed route segment {segment!r}; "
+            "expected [name], [name=type], [...name] or (group)"
+        )
     return segment

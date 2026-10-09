@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import difflib
 import inspect
-from typing import TYPE_CHECKING, Any, Mapping, Sequence, TypedDict
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from litestar import Router
 
@@ -36,7 +37,11 @@ ROUTER_OPTIONS = frozenset(inspect.signature(Router.__init__).parameters) - {
 
 
 class LayoutOptions(TypedDict, total=False):
-    """Keyword arguments of :class:`litestar.Router`, minus ``path`` and ``route_handlers``."""
+    """Keyword arguments of :class:`litestar.Router`, minus ``path`` and ``route_handlers``.
+
+    These are the options :class:`Layout` accepts. Use it only to type a reusable dict of
+    options, e.g. ``COMMON: LayoutOptions = {"tags": ["api"]}`` and ``Layout(**COMMON)``.
+    """
 
     after_request: AfterRequestHookHandler | None
     after_response: AfterResponseHookHandler | None
